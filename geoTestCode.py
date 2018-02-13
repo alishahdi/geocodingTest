@@ -79,10 +79,23 @@ class RESTHandler(BaseHTTPRequestHandler):
 	
 		   			plat = jsonResponse['Response']['View'][0]['Result'][0]['Location']['DisplayPosition']['Latitude']
 		   			plng = jsonResponse['Response']['View'][0]['Result'][0]['Location']['DisplayPosition']['Longitude']
-					return 'for ' + self.path + ' HERE lat is = ' + str(plat) + ' and lng is = ' + str(plng)
+					
+					# Creating the JSON output from the lat/lng info
+					data = {}
+					data['status'] = 'OK'
+					data['lat'] = plat
+					data['lng'] = plng
+					data['source'] = 'HERE'
+					jsonOutput = json.dumps(data)
+					return jsonOutput
 				else:
 					# HERE servers has responded but the address was invalid
-					return "No Results: Please enter a valid address" 
+					data = {}
+					data['status'] = 'Invalid'
+					data['source'] = 'HERE'
+					jsonOutput = json.dumps(data)
+					return jsonOutput
+			
 			# HERE APIs are also failing
 			except: 
 				return "All servers down. Please try again!"
