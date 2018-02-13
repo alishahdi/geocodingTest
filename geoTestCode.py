@@ -114,7 +114,7 @@ def runServer(serverClass = HTTPServer, handlerClass = RESTHandler, port = 8888)
 	except KeyboardInterrupt:
 		pass
 	print 'Stopping the HTTP server ...'
-	http_server.server_close()
+	httpServer.server_close()
 
 
 # __main__
