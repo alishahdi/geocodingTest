@@ -96,9 +96,13 @@ class RESTHandler(BaseHTTPRequestHandler):
 					jsonOutput = json.dumps(data)
 					return jsonOutput
 			
-			# HERE APIs are also failing
+			# Both APIs are failing
 			except: 
-				return "All servers down. Please try again!"
+	
+				data = {}
+				data['status'] = 'Disconnected'
+				jsonOutput = json.dumps(data)
+				return jsonOutput
 			
 # Running the HTTP server on PORT 8888        
 def runServer(serverClass = HTTPServer, handlerClass = RESTHandler, port = 8888): 
