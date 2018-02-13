@@ -22,9 +22,9 @@ class RESTHandler(BaseHTTPRequestHandler):
 			# Generate the header
 		        self._set_headers() 
 			# Send geocoding requests using Google and HERE APIs and parse the lat/lng results for the address	
-			jsonResponse = self.geoCode() 
+			jsonOutput = self.geoCode() 
 			# Send back the result to the requester
-		        self.wfile.write(jsonResponse)
+		        self.wfile.write(jsonOutput)
 	
 	# Not doing anything on REST POST requests
 	def POST(self):
@@ -43,7 +43,7 @@ class RESTHandler(BaseHTTPRequestHandler):
 			jsonResponse = json.loads(request.read())
 		
 			# If the returned staus is OK parse lat/lng and return the values
-			if out['status'] == 'OK': 
+			if jsonResponse['status'] == 'OK': 
    				plat = jsonResponse['results'][0]['geometry']['location']['lat']
    				plng = jsonResponse['results'][0]['geometry']['location']['lng']
 
@@ -71,14 +71,14 @@ class RESTHandler(BaseHTTPRequestHandler):
 				#HERE geocoding API GET request
 				geoURL = "https://geocoder.cit.api.here.com/6.2/geocode.json?app_id=ykrI6wAjdahtpMwgZxhh&app_code=t1R7EyxS-G_q-VT78OcikA&searchtext=%s" % address 
 
-				req = urllib2.urlopen(geoURL)
-				out = json.loads(req.read())
+				request = urllib2.urlopen(geoURL)
+				jsonResponse = json.loads(request.read())
 			
 				# Check to see if the result is valid and return the values
-				if len(out['Response']['View']) > 0: 
+				if len(jsonResponse['Response']['View']) > 0: 
 	
-		   			plat = out['Response']['View'][0]['Result'][0]['Location']['DisplayPosition']['Latitude']
-		   			plng = out['Response']['View'][0]['Result'][0]['Location']['DisplayPosition']['Longitude']
+		   			plat = jsonResponse['Response']['View'][0]['Result'][0]['Location']['DisplayPosition']['Latitude']
+		   			plng = jsonResponse['Response']['View'][0]['Result'][0]['Location']['DisplayPosition']['Longitude']
 					return 'for ' + self.path + ' HERE lat is = ' + str(plat) + ' and lng is = ' + str(plng)
 				else:
 					# HERE servers has responded but the address was invalid
